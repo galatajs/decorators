@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import { HttpMethods } from "@galatajs/core";
-import { ReflectRoute } from "../reflect-route";
 import { Middleware } from "@galatajs/http";
 import { registerMiddlewareToReflect } from "./middleware.decorators";
+import { ReflectRoute } from "../http.types";
+import { HttpReflectEnum } from "../http.enum";
 
 type RegisterParams = {
   path: string;
@@ -14,11 +15,15 @@ type RegisterParams = {
 };
 
 const registerRouteToReflect = (params: RegisterParams): void => {
-  if (!Reflect.hasMetadata("http:routes", params.target.constructor)) {
-    Reflect.defineMetadata("http:routes", [], params.target.constructor);
+  if (!Reflect.hasMetadata(HttpReflectEnum.ROUTES, params.target.constructor)) {
+    Reflect.defineMetadata(
+      HttpReflectEnum.ROUTES,
+      [],
+      params.target.constructor
+    );
   }
   const routes = Reflect.getMetadata(
-    "http:routes",
+    HttpReflectEnum.ROUTES,
     params.target.constructor
   ) as Array<ReflectRoute>;
 
@@ -28,7 +33,11 @@ const registerRouteToReflect = (params: RegisterParams): void => {
     isAll: params.isAll ?? false,
     methodName: params.propertyKey.toString(),
   });
-  Reflect.defineMetadata("http:routes", routes, params.target.constructor);
+  Reflect.defineMetadata(
+    HttpReflectEnum.ROUTES,
+    routes,
+    params.target.constructor
+  );
   registerMiddlewareToReflect({
     methods: params.methods,
     middlewares: params.middlewares ?? [],

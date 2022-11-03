@@ -8,3 +8,10 @@ export type ReflectMiddleware = {
   isAll?: boolean;
   routerScope?: boolean;
 };
+
+export type ReflectRoute = {
+  path: string;
+  httpMethods: HttpMethods[];
+  methodName: string;
+  isAll: boolean;
+};

@@ -1,6 +1,7 @@
 import { HttpMethods } from "@galatajs/core";
 import { Middleware } from "@galatajs/http";
-import { ReflectMiddleware } from "../reflect-middleware";
+import { HttpReflectEnum } from "../http.enum";
+import { ReflectMiddleware } from "../http.types";
 
 type RegisterMiddlewareParams = {
   target: any;
@@ -14,12 +15,12 @@ type RegisterMiddlewareParams = {
 export const registerMiddlewareToReflect = (
   params: RegisterMiddlewareParams
 ): void => {
-  if (!Reflect.hasMetadata("http:middlewares", params.target)) {
-    Reflect.defineMetadata("http:middlewares", [], params.target);
+  if (!Reflect.hasMetadata(HttpReflectEnum.MIDDLEWARES, params.target)) {
+    Reflect.defineMetadata(HttpReflectEnum.MIDDLEWARES, [], params.target);
   }
   if (params.middlewares.length > 0) {
     const middlewares = Reflect.getMetadata(
-      "http:middlewares",
+      HttpReflectEnum.MIDDLEWARES,
       params.target
     ) as Array<ReflectMiddleware>;
     middlewares.push({
@@ -29,6 +30,10 @@ export const registerMiddlewareToReflect = (
       isAll: params.isAll ?? false,
       routerScope: params.routerScope,
     });
-    Reflect.defineMetadata("http:middlewares", middlewares, params.target);
+    Reflect.defineMetadata(
+      HttpReflectEnum.MIDDLEWARES,
+      middlewares,
+      params.target
+    );
   }
 };
