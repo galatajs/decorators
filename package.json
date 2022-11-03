@@ -1,0 +1,46 @@
+{
+  "name": "@galatajs/decorators",
+  "version": "0.1.1",
+  "description": "Decorators package of galatajs framework",
+  "homepage": "https://github.com/galatajs/decorators#readme",
+  "keywords": [
+    "galatajs",
+    "decorators"
+  ],
+  "author": "Sami Salih İBRAHİMBAŞ",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/galatajs/decorators.git"
+  },
+  "bugs": {
+    "url": "https://github.com/galatajs/decorators/issues"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "test": "node --no-warnings --test",
+    "clear": "del-cli ./dist/*",
+    "build": "npm run clear && tsc",
+    "production": "npm run build && npm run test",
+    "dev": "ts-node-dev ./test/app.ts"
+  },
+  "dependencies": {
+    "@galatajs/app": "^0.1.1",
+    "@galatajs/core": "^0.1.1",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@galatajs/http": "^0.1.1",
+    "@types/node": "^18.0.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.4"
+  }
+}
