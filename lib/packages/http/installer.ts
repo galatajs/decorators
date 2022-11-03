@@ -19,7 +19,7 @@ export const installHttp = async (provider: any): Promise<void> => {
     provider.constructor
   );
   const routes: Array<ReflectRoute> = Reflect.getMetadata(
-    HttpReflectEnum.PREFIX,
+    HttpReflectEnum.ROUTES,
     provider.constructor
   );
   const middlewares = Reflect.getMetadata(

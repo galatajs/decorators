@@ -26,15 +26,15 @@ const myRouterMiddleware = (
 };
 
 @Controller("test", [myRouterMiddleware])
-class Provider {
+class TestController {
   @Get("all", [myMiddleware, myMiddleware])
-  getAll() {
-    console.log("getAll");
+  getAll(req: Request, res: Response) {
+    return res.success("getAll");
   }
 }
 
 const mainModule = createModule("main", {
-  providers: [Provider],
+  providers: [TestController],
 });
 
 const app = createApp(mainModule);
