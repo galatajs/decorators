@@ -1,10 +1,33 @@
 import { Controller, createDecoratorApp, Get } from "../lib";
 import { createApp, createModule } from "@galatajs/app";
-import { createHttpServer } from "@galatajs/http";
+import {
+  createHttpServer,
+  NextFunction,
+  Request,
+  Response,
+} from "@galatajs/http";
 
-@Controller("test")
+const myMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  console.log("myMiddleware");
+  next();
+};
+
+const myRouterMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  console.log("myRouterMiddleware");
+  next();
+};
+
+@Controller("test", [myRouterMiddleware])
 class Provider {
-  @Get("all")
+  @Get("all", [myMiddleware, myMiddleware])
   getAll() {
     console.log("getAll");
   }

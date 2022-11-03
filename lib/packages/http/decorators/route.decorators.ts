@@ -1,75 +1,160 @@
 import "reflect-metadata";
 import { HttpMethods } from "@galatajs/core";
 import { ReflectRoute } from "../reflect-route";
+import { Middleware } from "@galatajs/http";
+import { registerMiddlewareToReflect } from "./middleware.decorators";
 
-const registerRouteToReflect = (
-  methods: HttpMethods[],
-  path: string,
-  target: object,
-  propertyKey: string | symbol,
-  isAll: boolean = false
-): void => {
-  if (!Reflect.hasMetadata("http:routes", target.constructor)) {
-    Reflect.defineMetadata("http:routes", [], target.constructor);
+type RegisterParams = {
+  path: string;
+  middlewares?: Middleware[];
+  methods: HttpMethods[];
+  target: object;
+  propertyKey: string | symbol;
+  isAll?: boolean;
+};
+
+const registerRouteToReflect = (params: RegisterParams): void => {
+  if (!Reflect.hasMetadata("http:routes", params.target.constructor)) {
+    Reflect.defineMetadata("http:routes", [], params.target.constructor);
   }
   const routes = Reflect.getMetadata(
     "http:routes",
-    target.constructor
+    params.target.constructor
   ) as Array<ReflectRoute>;
 
   routes.push({
-    path: path,
-    httpMethods: methods,
-    isAll: isAll,
-    methodName: propertyKey.toString(),
+    path: params.path,
+    httpMethods: params.methods,
+    isAll: params.isAll ?? false,
+    methodName: params.propertyKey.toString(),
   });
-  Reflect.defineMetadata("http:routes", routes, target.constructor);
+  Reflect.defineMetadata("http:routes", routes, params.target.constructor);
+  registerMiddlewareToReflect({
+    methods: params.methods,
+    middlewares: params.middlewares ?? [],
+    path: params.path,
+    target: params.target.constructor,
+    isAll: params.isAll,
+  });
 };
 
-export const Post = (path: string): MethodDecorator => {
+export const Post = (
+  path: string,
+  middlewares: Middleware[] = []
+): MethodDecorator => {
   return (target: object, propertyKey: string | symbol): void => {
-    registerRouteToReflect([HttpMethods.POST], path, target, propertyKey);
+    registerRouteToReflect({
+      path,
+      middlewares,
+      methods: [HttpMethods.POST],
+      target,
+      propertyKey,
+    });
   };
 };
 
-export const Get = (path: string): MethodDecorator => {
+export const Get = (
+  path: string,
+  middlewares: Middleware[] = []
+): MethodDecorator => {
   return (target: object, propertyKey: string | symbol): void => {
-    registerRouteToReflect([HttpMethods.GET], path, target, propertyKey);
+    registerRouteToReflect({
+      path,
+      middlewares,
+      methods: [HttpMethods.GET],
+      target,
+      propertyKey,
+    });
   };
 };
 
-export const Delete = (path: string): MethodDecorator => {
+export const Delete = (
+  path: string,
+  middlewares: Middleware[] = []
+): MethodDecorator => {
   return (target: object, propertyKey: string | symbol): void => {
-    registerRouteToReflect([HttpMethods.DELETE], path, target, propertyKey);
+    registerRouteToReflect({
+      path,
+      middlewares,
+      methods: [HttpMethods.DELETE],
+      target,
+      propertyKey,
+    });
   };
 };
 
-export const Put = (path: string): MethodDecorator => {
+export const Put = (
+  path: string,
+  middlewares: Middleware[] = []
+): MethodDecorator => {
   return (target: object, propertyKey: string | symbol): void => {
-    registerRouteToReflect([HttpMethods.PUT], path, target, propertyKey);
+    registerRouteToReflect({
+      path,
+      middlewares,
+      methods: [HttpMethods.PUT],
+      target,
+      propertyKey,
+    });
   };
 };
 
-export const Patch = (path: string): MethodDecorator => {
+export const Patch = (
+  path: string,
+  middlewares: Middleware[] = []
+): MethodDecorator => {
   return (target: object, propertyKey: string | symbol): void => {
-    registerRouteToReflect([HttpMethods.PATCH], path, target, propertyKey);
+    registerRouteToReflect({
+      path,
+      middlewares,
+      methods: [HttpMethods.PATCH],
+      target,
+      propertyKey,
+    });
   };
 };
 
-export const Head = (path: string): MethodDecorator => {
+export const Head = (
+  path: string,
+  middlewares: Middleware[] = []
+): MethodDecorator => {
   return (target: object, propertyKey: string | symbol): void => {
-    registerRouteToReflect([HttpMethods.HEAD], path, target, propertyKey);
+    registerRouteToReflect({
+      path,
+      middlewares,
+      methods: [HttpMethods.HEAD],
+      target,
+      propertyKey,
+    });
   };
 };
 
-export const Options = (path: string): MethodDecorator => {
+export const Options = (
+  path: string,
+  middlewares: Middleware[] = []
+): MethodDecorator => {
   return (target: object, propertyKey: string | symbol): void => {
-    registerRouteToReflect([HttpMethods.OPTIONS], path, target, propertyKey);
+    registerRouteToReflect({
+      path,
+      middlewares,
+      methods: [HttpMethods.OPTIONS],
+      target,
+      propertyKey,
+    });
   };
 };
 
-export const All = (path: string): MethodDecorator => {
+export const All = (
+  path: string,
+  middlewares: Middleware[] = []
+): MethodDecorator => {
   return (target: object, propertyKey: string | symbol): void => {
-    registerRouteToReflect([], path, target, propertyKey, true);
+    registerRouteToReflect({
+      path,
+      middlewares,
+      methods: [],
+      target,
+      propertyKey,
+      isAll: true,
+    });
   };
 };
