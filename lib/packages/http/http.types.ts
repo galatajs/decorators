@@ -15,3 +15,5 @@ export type ReflectRoute = {
   methodName: string;
   isAll: boolean;
 };
+
+export type RouterHttpMethods = "get" | "post" | "put" | "delete" | "all";

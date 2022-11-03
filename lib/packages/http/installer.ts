@@ -1,9 +1,11 @@
 import "reflect-metadata";
-import { ReflectRoute } from "./reflect-route";
 import { createRouter, Middleware } from "@galatajs/http";
-import { ReflectMiddleware } from "./reflect-middleware";
-
-type RouterHttpMethods = "get" | "post" | "put" | "delete" | "all";
+import {
+  ReflectMiddleware,
+  ReflectRoute,
+  RouterHttpMethods,
+} from "./http.types";
+import { HttpReflectEnum } from "./http.enum";
 
 const getMiddlewaresInReflectMiddlewares = (
   m: ReflectMiddleware[]
@@ -12,13 +14,16 @@ const getMiddlewaresInReflectMiddlewares = (
 };
 
 export const installHttp = async (provider: any): Promise<void> => {
-  const prefix = Reflect.getMetadata("http:prefix", provider.constructor);
+  const prefix = Reflect.getMetadata(
+    HttpReflectEnum.PREFIX,
+    provider.constructor
+  );
   const routes: Array<ReflectRoute> = Reflect.getMetadata(
-    "http:routes",
+    HttpReflectEnum.PREFIX,
     provider.constructor
   );
   const middlewares = Reflect.getMetadata(
-    "http:middlewares",
+    HttpReflectEnum.MIDDLEWARES,
     provider.constructor
   );
   const routerMiddlewares = middlewares.filter(
