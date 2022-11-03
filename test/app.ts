@@ -1,4 +1,12 @@
-import { Controller, createDecoratorApp, Get } from "../lib";
+import {
+  All,
+  Controller,
+  createDecoratorApp,
+  Delete,
+  Get,
+  Post,
+  Put,
+} from "../lib";
 import { createApp, createModule } from "@galatajs/app";
 import {
   createHttpServer,
@@ -12,8 +20,7 @@ const myMiddleware = (
   res: Response,
   next: NextFunction
 ): void => {
-  console.log("myMiddleware");
-  next();
+  res.badRequest("myMiddleware");
 };
 
 const myRouterMiddleware = (
@@ -21,26 +28,57 @@ const myRouterMiddleware = (
   res: Response,
   next: NextFunction
 ): void => {
-  console.log("myRouterMiddleware");
-  next();
+  res.badRequest("myRouterMiddleware");
 };
 
 @Controller("test", [myRouterMiddleware])
 class TestController {
-  @Get("all", [myMiddleware, myMiddleware])
+  @Get("all")
   getAll(req: Request, res: Response) {
     return res.success("getAll");
   }
 }
 
+@Controller("tes2")
+class TestControllerTwo {
+  @Get("all")
+  getAll(req: Request, res: Response) {
+    return res.success("getAll");
+  }
+
+  @Get("all2", [myMiddleware])
+  getAll2(req: Request, res: Response) {
+    return res.success("getAll2");
+  }
+
+  @Put("put")
+  put(req: Request, res: Response) {
+    return res.success("put");
+  }
+
+  @Post("post")
+  post(req: Request, res: Response) {
+    return res.success("post");
+  }
+
+  @Delete("delete")
+  delete(req: Request, res: Response) {
+    return res.success("delete");
+  }
+
+  @All("all-methods")
+  all(req: Request, res: Response) {
+    return res.success("all");
+  }
+}
+
 const mainModule = createModule("main", {
-  providers: [TestController],
+  providers: [TestController, TestControllerTwo],
 });
 
 const app = createApp(mainModule);
-app.register(createHttpServer());
+const server = createHttpServer();
+app.register(server);
 app.register(createDecoratorApp());
 
-app.start().then(() => {
-  console.log("app started");
-});
+export { app, server };
